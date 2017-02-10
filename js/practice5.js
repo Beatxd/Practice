@@ -66,3 +66,28 @@ function filterRange(arr, a, b) {
     return filteredArr;
 }
 
+/* На входе массив чисел, например: .
+ Задача – найти непрерывный подмассив arr, сумма элементов которого максимальна.
+ Ваша функция должна возвращать только эту сумму. */
+
+console.log(getMaxSubSum([-1, 2, 3, -9])); // 5
+console.log(getMaxSubSum([2, -1, 2, 3, -9])); // 6;
+console.log(getMaxSubSum([-1, 2, 3, -9, 11])); // 11;
+console.log(getMaxSubSum([-2, -1, 1, 2])); // 3;
+console.log(getMaxSubSum([100, -9, 30, 2, -3, 5])); // 125;
+console.log(getMaxSubSum([1, 2, 3])); // 6;
+console.log(getMaxSubSum([-1, -2, -3])); // 0;
+console.log(getMaxSubSum([100, -9, 30, 2, -130, 10, 50, 10, -10, 50, 10, 50])); // 170;
+
+function getMaxSubSum(arr){
+    var sum = 0;
+    var result = 0;
+    for (var i = 0; i < arr.length; i++){
+        sum += arr[i];
+        if (sum < 0) sum = 0;
+        if(sum > result) result = sum;
+        // Проверка поведения:
+        // console.log('Проход №' + i + '  sum = ' + sum + '  res = ' + result);
+    }
+    return result;
+}
