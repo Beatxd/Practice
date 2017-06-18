@@ -35,22 +35,32 @@ function CoffeeMachine(power, capacity) {
                 onReady()
             }
             catch (e) {
-                console.log('incorrect onReady');
+                console.log('incorrect onReady, return default');
+                onReadyDefault();
+            }
+            finally {
+                timerId = null; // for correct isRunning();
             }
         }, this.getBoilTime());
     };
     this.stop = function () {
         clearTimeout(timerId);
+        timerId = null; // for correct isRunning();
     };
     this.getBoilTime = function () {
         return WATER_HEAT_CAPACITY * waterAmount * (100 - saveThis.waterTemperature) / power;
     };
+    this.isRunning = function () {
+        return !!timerId
+    };
     // private methods
+    var onReadyDefault = function () {
+        console.log('Coffee is ready. ' + waterAmount + ' ml for ' +
+            saveThis.getBoilTime() / 1000 + ' sec');
+    };
 
     function onReady() {
-        console.log('Coffee is ready. ' + boshCoffeeMachine.waterAmount() + ' ml for ' +
-            boshCoffeeMachine.getBoilTime() / 1000 + ' sec');
-
+        onReadyDefault();
     }
 }
 
@@ -58,14 +68,17 @@ var boshCoffeeMachine = new CoffeeMachine(1000, 500);
 console.log(boshCoffeeMachine.getPower());
 boshCoffeeMachine.waterAmount(5); // low num for quick work
 boshCoffeeMachine.addWater(5); // ok
-// boshCoffeeMachine.addWater(500); // error. capacity
+// boshCoffeeMachine.addWater(499); // error. capacity
 console.log(boshCoffeeMachine.waterAmount());
+console.log('isRunning: До ' + boshCoffeeMachine.isRunning());
 boshCoffeeMachine.run();
+console.log('isRunning: start ' + boshCoffeeMachine.isRunning());
 boshCoffeeMachine.setOnReady(function () {
     alert('Кофе готов. ' + boshCoffeeMachine.waterAmount() / 1000 + 'л за ' +
         boshCoffeeMachine.getBoilTime() / 1000 + ' сек');
 });
 boshCoffeeMachine.stop();
+console.log('isRunning: stop ' + boshCoffeeMachine.isRunning());
 
 // -----------User-------------
 
