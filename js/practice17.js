@@ -22,19 +22,19 @@ function CoffeeMachine(power, capacity) {
     var waterAmount = 0;
     var timerId;
     var WATER_HEAT_CAPACITY = 4200;
-    this.waterTemperature = 20;
+    this._waterTemperature = 20;
 
-    this.waterAmount = function (amount) {
+    this._waterAmount = function (amount) {
         // getter
-        if (!arguments.length) return waterAmount;
+        if (!arguments.length) return _waterAmount;
         // setter
         if (amount < 0) throw new Error('Water amount cant be < 0');
         if (amount > capacity) throw new Error('Cant add more water than ' + capacity + 'ml');
-        waterAmount = amount;
+        _waterAmount = amount;
     };
     // setters
     this.addWater = function (ml) {
-        this.waterAmount(waterAmount + ml);
+        this._waterAmount(_waterAmount + ml);
     };
     this.setOnReady = function (func) {
         onReady = func;
@@ -64,7 +64,7 @@ function CoffeeMachine(power, capacity) {
             }
             finally {
                 timerId = null; // for correct isRunning();
-                waterAmount = 0;
+                _waterAmount = 0;
             }
         }, this.getBoilTime());
     };
@@ -81,14 +81,14 @@ function CoffeeMachine(power, capacity) {
         this.stop();
     };
     this.getBoilTime = function () {
-        return WATER_HEAT_CAPACITY * waterAmount * (100 - saveThis.waterTemperature) / this._power;
+        return WATER_HEAT_CAPACITY * _waterAmount * (100 - saveThis._waterTemperature) / this._power;
     };
     this.isRunning = function () {
         return !!timerId
     };
     // private methods
     var onReadyDefault = function () {
-        console.log('Coffee is ready. ' + waterAmount + ' ml for ' +
+        console.log('Coffee is ready. ' + _waterAmount + ' ml for ' +
             saveThis.getBoilTime() / 1000 + ' sec');
     };
     function onReady() {
@@ -98,14 +98,14 @@ function CoffeeMachine(power, capacity) {
 
 var boshCoffeeMachine = new CoffeeMachine(1000, 500);
 console.log(boshCoffeeMachine.getPower());
-boshCoffeeMachine.waterAmount(5); // low num for quick work
+boshCoffeeMachine._waterAmount(5); // low num for quick work
 boshCoffeeMachine.addWater(5); // ok
 // boshCoffeeMachine.addWater(499); // error. capacity
 boshCoffeeMachine.enable();
 // boshCoffeeMachine.stop();
 boshCoffeeMachine.disable();
 boshCoffeeMachine.setOnReady(function () {
-    alert('Кофе готов. ' + boshCoffeeMachine.waterAmount() / 1000 + 'л за ' +
+    alert('Кофе готов. ' + boshCoffeeMachine._waterAmount() / 1000 + 'л за ' +
         boshCoffeeMachine.getBoilTime() / 1000 + ' сек');
 });
 
