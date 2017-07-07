@@ -2,7 +2,7 @@
 function Board(wrapperId, columns = 8, lines = 8) {
     if (columns > 26) return alert('create less columns');
 
-    this.letters = 'abcdifghigklmnopqrstuvwxyz'.split('', columns);
+    const letters = 'abcdifghigklmnopqrstuvwxyz'.split('', columns);
 
     const place = document.getElementById(wrapperId);
     const boardWrapper = place.appendChild(document.createElement('div'));
@@ -18,7 +18,7 @@ function Board(wrapperId, columns = 8, lines = 8) {
         let j = 0;
         for (let i = 0; i < numCells; i++) {
             let newDiv = document.createElement('div');
-            newDiv.id = this.letters[j] + lineNum;
+            newDiv.id = letters[j] + lineNum;
             newDiv.className = 'boardCell';
             boardWrapper.appendChild(newDiv);
             j++;
@@ -26,11 +26,40 @@ function Board(wrapperId, columns = 8, lines = 8) {
                 lineNum++;
                 j = 0;
             }
-
         }
     };
     createCells(lines, columns);
-
 }
 
-let standartBoard = new Board('place');
+function boardClick(elemId) {
+    let elem = document.getElementById(elemId);
+    let selectedCell;
+
+    elem.onclick = function(event) {
+        let target = event.target;
+        while (target != this) {
+            if (target.tagName == 'DIV') {
+                highlight(target);
+                return;
+            }
+            target = target.parentNode;
+        }
+    };
+
+    function highlight(node) {
+        if (selectedCell) {
+            selectedCell.classList.remove('highlight');
+        }
+        selectedCell = node;
+        selectedCell.classList.add('highlight');
+    }
+}
+
+function Checkers(boardPlace){
+    let board = new Board(boardPlace);
+    boardClick('boardWrapper');
+}
+
+
+new Checkers('place');
+
