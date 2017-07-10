@@ -13,7 +13,6 @@ function Board(wrapperId, columns = 8, lines = 8) {
     // Create cells
     let createCells = (lines, columns) => {
         const numCells = lines * columns;
-        console.log(numCells);
         let lineNum = 1;
         let j = 0;
         for (let i = 0; i < numCells; i++) {
@@ -31,21 +30,27 @@ function Board(wrapperId, columns = 8, lines = 8) {
     createCells(lines, columns);
 }
 
-function boardClick(elemId) {
-    let elem = document.getElementById(elemId);
+
+function Checkers(boardPlace){
+    let board = new Board(boardPlace);
+    boardClick('boardWrapper');
     let selectedCell;
 
-    elem.onclick = function(event) {
-        let target = event.target;
-        while (target != this) {
-            if (target.tagName == 'DIV') {
-                highlight(target);
-                return;
-            }
-            target = target.parentNode;
-        }
-    };
+    function boardClick(elemId) {
+        let elem = document.getElementById(elemId);
 
+
+        elem.onclick = function(event) {
+            let target = event.target;
+            while (target != this) {
+                if (target.tagName == 'DIV') {
+                    highlight(target);
+                    return;
+                }
+                target = target.parentNode;
+            }
+        };
+    }
     function highlight(node) {
         if (selectedCell) {
             selectedCell.classList.remove('highlight');
@@ -53,11 +58,6 @@ function boardClick(elemId) {
         selectedCell = node;
         selectedCell.classList.add('highlight');
     }
-}
-
-function Checkers(boardPlace){
-    let board = new Board(boardPlace);
-    boardClick('boardWrapper');
 }
 
 
