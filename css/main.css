@@ -11,3 +11,12 @@ body{
     background: #444;
     color: #bbb;
 }
+.domTest td{
+    display: inline-block;
+    width: 50px;
+    height: 50px;
+    border: 1px solid white;
+}
+.domTest{
+    border-spacing: 0;
+}
