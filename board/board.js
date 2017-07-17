@@ -1,13 +1,13 @@
 'use strict';
-function Board(wrapperId, newBoardId, columns = 8, lines = 8) {
+function Board(placeId, newBoardId, columns = 8, lines = 8) {
     if (columns > 26) return alert('create less columns');
 
     this.lines = lines;
     this.columns = columns;
     this.letters = 'abcdifghigklmnopqrstuvwxyz'.split('', columns);
     this.cellsIdArr = [];
-
-    const place = document.getElementById(wrapperId);
+    
+    const place = document.getElementById(placeId);
     const boardWrapper = place.appendChild(document.createElement('div'));
     boardWrapper.id = newBoardId;
     boardWrapper.className = 'boardWrapper';
@@ -43,13 +43,25 @@ function Board(wrapperId, newBoardId, columns = 8, lines = 8) {
     createCells(lines, columns);
 }
 
+function Trash(placeId){
+    placeId = document.getElementById(placeId);
+    let div = placeId.appendChild(document.createElement('div'));
+    div.className = 'boardTrash';
+    let title = div.appendChild(document.createElement('h2'));
+    title.innerHTML = 'Отбой:';
+}
 
-function Checkers(boardPlace, id = 'id' + Math.floor(Math.random() * 1000000)) {
-    Board.apply(this, [boardPlace, id]);
+function Checkers(placeId, id = 'id' + Math.floor(Math.random() * 1000000)) {
+    Board.apply(this, [placeId, id]);
+    Trash.call(this, placeId);
     boardClick(id);
+    trashClick();
 
     const blackFigure = '<img src="img\\black.png" class="checkersImg">';
     const whiteFigure = '<img src="img\\white.png" class="checkersImg">';
+
+    let tempInnerHTML = '';
+    let selectedCell;
 
     this.startGame = (startLines = 3) => {
         const cellsNum = this.columns * this.lines;
@@ -80,22 +92,18 @@ function Checkers(boardPlace, id = 'id' + Math.floor(Math.random() * 1000000)) {
 
         };
     }
-
-    let tempInnerHTML = '';
     function figureMove(cell) {
         if (cell.classList.contains('whiteCell')) return;
         if (cell.innerHTML != '') {
             if(tempInnerHTML != '') return;
-            temp = cell.innerHTML;
+            tempInnerHTML = cell.innerHTML;
             cell.innerHTML = '';
-            console.log(temp);
+            console.log(tempInnerHTML);
         } else {
-            cell.innerHTML = temp;
-            temp = '';
+            cell.innerHTML = tempInnerHTML;
+            tempInnerHTML = '';
         }
     }
-
-    let selectedCell;
     function highlight(node) {
         if (selectedCell) {
             selectedCell.classList.remove('highlight');
@@ -103,8 +111,16 @@ function Checkers(boardPlace, id = 'id' + Math.floor(Math.random() * 1000000)) {
         selectedCell = node;
         selectedCell.classList.add('highlight');
     }
+    function trashClick(){
+        let trash = document.querySelector('.boardTrash');
+        trash.onclick = function(){
+            if(tempInnerHTML != ''){
+                trash.innerHTML += tempInnerHTML;
+                tempInnerHTML = '';
+            }
+        }
+    }
 }
-
 
 new Checkers('place');
 
