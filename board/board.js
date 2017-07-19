@@ -51,17 +51,32 @@ function Trash(placeId){
     title.innerHTML = 'Отбой:';
 }
 
+function Log(placeId, BoardId){
+    placeId = document.getElementById(placeId);
+    let div = placeId.appendChild(document.createElement('div'));
+    div.className = 'boardLog';
+    let title = div.appendChild(document.createElement('h2'));
+    title.innerHTML = 'log:';
+
+    this.tempLog = '';
+    let logCount = 1; // Nuber of str. Need white/black colors
+    // this.write
+}
+
 function Checkers(placeId, id = 'id' + Math.floor(Math.random() * 1000000)) {
+    const blackFigure = '<img src="img\\black.png" class="checkersImg">';
+    const whiteFigure = '<img src="img\\white.png" class="checkersImg">';
+    let tempInnerHTML = '';
+    let selectedCell;
+
     Board.apply(this, [placeId, id]);
     Trash.call(this, placeId);
+    Log.apply(this, [placeId, id]);
+
     boardClick(id);
     trashClick();
 
-    const blackFigure = '<img src="img\\black.png" class="checkersImg">';
-    const whiteFigure = '<img src="img\\white.png" class="checkersImg">';
 
-    let tempInnerHTML = '';
-    let selectedCell;
 
     this.startGame = (startLines = 3) => {
         const cellsNum = this.columns * this.lines;
@@ -98,7 +113,6 @@ function Checkers(placeId, id = 'id' + Math.floor(Math.random() * 1000000)) {
             if(tempInnerHTML != '') return;
             tempInnerHTML = cell.innerHTML;
             cell.innerHTML = '';
-            console.log(tempInnerHTML);
         } else {
             cell.innerHTML = tempInnerHTML;
             tempInnerHTML = '';
