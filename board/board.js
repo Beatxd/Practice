@@ -6,7 +6,7 @@ function Board(placeId, newBoardId, columns = 8, lines = 8) {
     this.columns = columns;
     this.letters = 'abcdifghigklmnopqrstuvwxyz'.split('', columns);
     this.cellsIdArr = [];
-    
+
     const place = document.getElementById(placeId);
     const boardWrapper = place.appendChild(document.createElement('div'));
     boardWrapper.id = newBoardId;
@@ -43,7 +43,7 @@ function Board(placeId, newBoardId, columns = 8, lines = 8) {
     createCells(lines, columns);
 }
 
-function Trash(placeId){
+function Trash(placeId) {
     placeId = document.getElementById(placeId);
     let div = placeId.appendChild(document.createElement('div'));
     div.className = 'boardTrash';
@@ -51,33 +51,39 @@ function Trash(placeId){
     title.innerHTML = 'Отбой:';
 }
 
-function Log(placeId, BoardId){
+function Log(placeId, boardId) {
     placeId = document.getElementById(placeId);
-    let div = placeId.appendChild(document.createElement('div'));
-    div.className = 'boardLog';
-    let title = div.appendChild(document.createElement('h2'));
-    title.innerHTML = 'log:';
+    boardId = document.getElementById(boardId);
 
-    this.tempLog = '';
-    let logCount = 1; // Nuber of str. Need white/black colors
-    // this.write
+    let mainLog = placeId.appendChild(document.createElement('div'));
+    mainLog.className = 'boardLog';
+    let title = mainLog.appendChild(document.createElement('h2'));
+    title.innerHTML = 'log:';
+    this.logList = mainLog.appendChild(document.createElement('ul'));
+
+    this.logWriteTurn = (str) => {
+        if (!str) return;
+        let li = this.logList.appendChild(document.createElement('li'));
+        li.innerHTML = str;
+        return li;
+    };
+    this.logMessage = (str, color = '#000') => {
+        if (!str) return;
+        let p = this.logList.appendChild(document.createElement('p'));
+        p.style.color = color;
+    };
 }
 
 function Checkers(placeId, id = 'id' + Math.floor(Math.random() * 1000000)) {
-    const blackFigure = '<img src="img\\black.png" class="checkersImg">';
-    const whiteFigure = '<img src="img\\white.png" class="checkersImg">';
-    let tempInnerHTML = '';
-    let selectedCell;
-
     Board.apply(this, [placeId, id]);
     Trash.call(this, placeId);
     Log.apply(this, [placeId, id]);
-
+    let tempInnerHTML = '';
     boardClick(id);
     trashClick();
 
-
-
+    const blackFigure = '<img src="img\\black.png" class="checkersImg">';
+    const whiteFigure = '<img src="img\\white.png" class="checkersImg">';
     this.startGame = (startLines = 3) => {
         const cellsNum = this.columns * this.lines;
         for (let i = 1; i < startLines * this.columns; i++) {
@@ -93,7 +99,7 @@ function Checkers(placeId, id = 'id' + Math.floor(Math.random() * 1000000)) {
 
     function boardClick(elemId) {
         let elem = document.getElementById(elemId);
-        elem.onclick = function(event) {
+        elem.onclick = function (event) {
             let target = event.target;
 
             while (target != this) {
@@ -107,17 +113,56 @@ function Checkers(placeId, id = 'id' + Math.floor(Math.random() * 1000000)) {
 
         };
     }
-    function figureMove(cell) {
+
+    let tempLoggerCell;
+    let tempLoggerTurn;
+    let tempLoggerLi;
+    let logCount = 1;
+    let logger = (firstCell, secondCell) => {
+        if (!tempInnerHTML){
+            tempLoggerCell = null;
+            return;
+        }
+        if (firstCell) tempLoggerCell = firstCell;
+        if (tempLoggerCell == secondCell) {
+            tempLoggerCell = null;
+            return;
+        }
+        if (tempLoggerCell && secondCell) {
+            if (tempLoggerTurn) {
+                tempLoggerLi.remove();
+                this.logWriteTurn(`${logCount}.) <b>${tempLoggerTurn}</b> :^: <b>${tempLoggerCell
+                    .toUpperCase()} - ${secondCell.toUpperCase()}</b>`);
+                tempLoggerTurn = null;
+                logCount++;
+            } else {
+                tempLoggerTurn = `${tempLoggerCell.toUpperCase()} - ${secondCell.toUpperCase()}`;
+                tempLoggerLi = this.logWriteTurn(`${logCount}.) <b>${tempLoggerTurn}</b>`);
+            }
+            tempLoggerCell = null;
+            if (this.logList.children.length > 20) {
+                this.logList.children[this.logList.children.length - 21].setAttribute('hidden', 'true')
+            }
+        }
+
+    };
+
+
+    function figureMove(cell){
         if (cell.classList.contains('whiteCell')) return;
         if (cell.innerHTML != '') {
-            if(tempInnerHTML != '') return;
+            if (tempInnerHTML != '') return;
             tempInnerHTML = cell.innerHTML;
+            logger(cell.id);
             cell.innerHTML = '';
         } else {
             cell.innerHTML = tempInnerHTML;
+            logger(false, cell.id);
             tempInnerHTML = '';
         }
     }
+
+    let selectedCell;
     function highlight(node) {
         if (selectedCell) {
             selectedCell.classList.remove('highlight');
@@ -125,10 +170,11 @@ function Checkers(placeId, id = 'id' + Math.floor(Math.random() * 1000000)) {
         selectedCell = node;
         selectedCell.classList.add('highlight');
     }
-    function trashClick(){
+
+    function trashClick() {
         let trash = document.querySelector('.boardTrash');
-        trash.onclick = function(){
-            if(tempInnerHTML != ''){
+        trash.onclick = function () {
+            if (tempInnerHTML != '') {
                 trash.innerHTML += tempInnerHTML;
                 tempInnerHTML = '';
             }
@@ -137,4 +183,3 @@ function Checkers(placeId, id = 'id' + Math.floor(Math.random() * 1000000)) {
 }
 
 new Checkers('place');
-

@@ -56,11 +56,18 @@ h2{
     border: 1px solid black;
     margin: 10px;
     float: right;
-    background-color: #EFDAB6;
+    background-color: #B58961;
     -webkit-border-radius: 4px;
     -moz-border-radius: 4px;
     border-radius: 4px;
 }
-.boardLog h2{
-    color: black;
+.boardLog ul li{
+    margin-left: 10px;
+    list-style: none;
+}
+.boardLog ul li b{
+    color: #fff;
+}
+.boardLog ul li b:nth-child(2){
+    color: #000;
 }
