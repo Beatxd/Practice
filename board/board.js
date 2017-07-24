@@ -25,7 +25,7 @@ function Board(placeId, newBoardId, columns = 8, lines = 8) {
             colorSetter(j, lineNum, newDiv);
             boardWrapper.appendChild(newDiv);
             j++;
-            if (columns == j) {
+            if (columns === j) {
                 lineNum++;
                 j = 0;
             }
@@ -49,6 +49,7 @@ function Trash(placeId) {
     div.className = 'boardTrash';
     let title = div.appendChild(document.createElement('h2'));
     title.innerHTML = 'Отбой:';
+
 }
 
 function Log(placeId, boardId) {
@@ -80,7 +81,7 @@ function Checkers(placeId, id = 'id' + Math.floor(Math.random() * 1000000)) {
     Log.apply(this, [placeId, id]);
     let tempInnerHTML = '';
     boardClick(id);
-    trashClick();
+    trashClick(tempInnerHTML);
 
     const blackFigure = '<img src="img\\black.png" class="checkersImg">';
     const whiteFigure = '<img src="img\\white.png" class="checkersImg">';
@@ -97,13 +98,76 @@ function Checkers(placeId, id = 'id' + Math.floor(Math.random() * 1000000)) {
     };
     this.startGame();
 
+    let selectedCell;
+    let pathFinder = (cell, offHighlight) => {
+        if (offHighlight){
+            let highlightCells = document.getElementById(id).querySelectorAll('.highlightAvailible');
+            highlightCells.forEach((cell) => {
+                cell.classList.remove('highlightAvailible');
+            });
+            return;
+        }
+        const current = cell.id.split('');
+        const letters = this.letters;
+        let letterIndex = letters.indexOf(current[0]);
+
+        let leftUp = finder('left', 'up');
+        let rightUp = finder('right', 'up');
+        let leftDown = finder('left', 'down');
+        let rightDown = finder('right', 'down');
+        if(leftUp) highlightPath(leftUp);
+        if(rightUp) highlightPath(rightUp);
+        if(leftDown) highlightPath(leftDown);
+        if(rightDown) highlightPath(rightDown);
+
+        function finder(horizChange, vertChange) {
+            let result = '';
+            if (horizChange === 'left') {
+                if (letterIndex > 0) {
+                    result = letters[letterIndex - 1];
+                }else{
+                    return null;
+                }
+            }
+            if (horizChange === 'right') {
+                if (letterIndex < letters.length - 1) {
+                    result = letters[letterIndex + 1];
+                }else{
+                    return null;
+                }
+            }
+            if (vertChange === 'up') {
+                if (current[1] > 1) {
+                    result += current[1] - 1;
+                }else{
+                    return null;
+                }
+            }
+            if (vertChange === 'down') {
+                if (current[1] < 8) {
+                    result += +current[1] + 1;
+                }else{
+                    return null;
+                }
+            }
+            return document.getElementById(result);
+        }
+
+        function highlightPath(node){
+            if (node.firstChild) return;
+            node.classList.add('highlightAvailible');
+        }
+
+
+    };
+
     function boardClick(elemId) {
         let elem = document.getElementById(elemId);
         elem.onclick = function (event) {
             let target = event.target;
 
-            while (target != this) {
-                if (target.tagName == 'DIV') {
+            while (target !== this) {
+                if (target.tagName === 'DIV') {
                     highlight(target);
                     figureMove(target);
                     return;
@@ -119,12 +183,12 @@ function Checkers(placeId, id = 'id' + Math.floor(Math.random() * 1000000)) {
     let tempLoggerLi;
     let logCount = 1;
     let logger = (firstCell, secondCell) => {
-        if (!tempInnerHTML){
+        if (!tempInnerHTML) {
             tempLoggerCell = null;
             return;
         }
         if (firstCell) tempLoggerCell = firstCell;
-        if (tempLoggerCell == secondCell) {
+        if (tempLoggerCell === secondCell) {
             tempLoggerCell = null;
             return;
         }
@@ -147,22 +211,22 @@ function Checkers(placeId, id = 'id' + Math.floor(Math.random() * 1000000)) {
 
     };
 
-
-    function figureMove(cell){
+    function figureMove(cell) {
         if (cell.classList.contains('whiteCell')) return;
-        if (cell.innerHTML != '') {
-            if (tempInnerHTML != '') return;
+        if (cell.innerHTML !== '') {
+            if (tempInnerHTML !== '') return;
             tempInnerHTML = cell.innerHTML;
             logger(cell.id);
             cell.innerHTML = '';
+            pathFinder(cell);
         } else {
             cell.innerHTML = tempInnerHTML;
             logger(false, cell.id);
             tempInnerHTML = '';
+            pathFinder(null, true)
         }
     }
 
-    let selectedCell;
     function highlight(node) {
         if (selectedCell) {
             selectedCell.classList.remove('highlight');
@@ -174,7 +238,7 @@ function Checkers(placeId, id = 'id' + Math.floor(Math.random() * 1000000)) {
     function trashClick() {
         let trash = document.querySelector('.boardTrash');
         trash.onclick = function () {
-            if (tempInnerHTML != '') {
+            if (tempInnerHTML !== '') {
                 trash.innerHTML += tempInnerHTML;
                 tempInnerHTML = '';
             }

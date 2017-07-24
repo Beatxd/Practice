@@ -32,6 +32,9 @@ h2{
 .highlight{
     box-shadow: 0 0 0 2px #000 inset, 0 0 0 4px white inset;
 }
+.highlightAvailible{
+    box-shadow: 0 0 0 2px #5a5 inset, 0 0 0 4px white inset;
+}
 .checkersImg{
     height: 40px;
     width: 40px;
