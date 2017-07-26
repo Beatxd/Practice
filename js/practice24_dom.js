@@ -98,7 +98,7 @@ function isObjEmpty(obj) {
 // ----------sixth part------------
 
 document.body.appendChild(document.createElement('div')).id = 'calendar';
-createCalendar('calendar', 2017, 6);
+createCalendar('calendar', 2017, 10);
 
 function createCalendar(containerId, year, month) {
     const parent = document.getElementById(containerId);
@@ -126,7 +126,7 @@ function createCalendar(containerId, year, month) {
         newTd(tr);
     }
 
-    for (let i = 1, j = firstWeekDay-1; i < firstWeekDay - 1 + daysInMonth; i++, j++) {
+    for (let i = 1, j = firstWeekDay - 1; i < firstWeekDay - 1 + daysInMonth; i++, j++) {
         if (j === 7) {
             j = 0;
             tr = newTr();
@@ -138,7 +138,39 @@ function createCalendar(containerId, year, month) {
     function newTr() {
         return table.appendChild(document.createElement('tr'));
     }
+
     function newTd(trNode) {
         return trNode.appendChild(document.createElement('td'));
+    }
+}
+
+// ----------seventh part------------
+
+const ul = document.querySelector('ol');
+ul.insertAdjacentHTML('beforeEnd', '<li>11</li><li>7</li><li>3</li>');
+
+let usersTable = document.createElement('table');
+usersTable.innerHTML = '<tr><th>Name</th><th>Surname</th><th>Age</th></tr><tr><td>John</td><td>Smith</td><td>23</td></tr><tr><td>John2</td><td>Smith2</td><td>40</td></tr><tr><td>John3</td><td>Smith3</td><td>15</td></tr>';
+document.body.insertBefore(usersTable, document.body.firstChild);
+
+usersSort(usersTable);
+
+function usersSort(tableNode) {
+    let usersArr = tableNode.querySelectorAll('tr');
+    let usersTemp = [];
+    const length = usersArr.length;
+    for (let i = 0; i < length; i++) {
+        if (!(usersArr[i].lastChild.innerHTML > 0)) continue;
+        usersTemp.push(usersArr[i].parentNode.removeChild(usersArr[i]));
+    }
+    usersTemp.sort(ageSort);
+
+    for (let i = 0; i < length; i++) {
+        tableNode.appendChild(usersTemp[i]);
+    }
+
+    function ageSort(a, b) {
+        if (a.lastChild.innerHTML > b.lastChild.innerHTML) return 1;
+        if (a.lastChild.innerHTML < b.lastChild.innerHTML) return -1;
     }
 }
