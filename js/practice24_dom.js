@@ -161,16 +161,20 @@ function usersSort(tableNode) {
     const length = usersArr.length;
     for (let i = 0; i < length; i++) {
         if (!(usersArr[i].lastChild.innerHTML > 0)) continue;
-        usersTemp.push(usersArr[i].parentNode.removeChild(usersArr[i]));
+        usersTemp.push({
+            elem: usersArr[i],
+            value: usersArr[i].lastChild.innerHTML
+        });
     }
     usersTemp.sort(ageSort);
 
-    for (let i = 0; i < length; i++) {
-        tableNode.appendChild(usersTemp[i]);
+    for (let i = 0; i < length - 1; i++) {
+        console.log(usersTemp);
+        tableNode.appendChild(usersTemp[i].elem);
     }
 
     function ageSort(a, b) {
-        if (a.lastChild.innerHTML > b.lastChild.innerHTML) return 1;
-        if (a.lastChild.innerHTML < b.lastChild.innerHTML) return -1;
+        if (a.value > b.value) return 1;
+        if (a.value < b.value) return -1;
     }
 }
