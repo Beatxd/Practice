@@ -26,3 +26,28 @@ body {
 li {
   margin-left: 20px;
 }
+
+
+/*Calendar*/
+#calendar{
+  margin: 10px;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+#calendar table{
+  border-spacing: 0;
+  border-collapse: collapse;
+}
+#calendar th, #calendar td{
+  border: ghostwhite solid 1px;
+  padding: 2px;
+  width: 20px;
+  height: 20px;
+}
+#calendar th{
+  background-color: #383;
+}
+#calendar th:nth-child(6),#calendar th:nth-child(7){
+  background-color: #262;
+}
