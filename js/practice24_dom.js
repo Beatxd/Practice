@@ -98,7 +98,7 @@ function isObjEmpty(obj) {
 // ----------sixth part------------
 
 document.body.appendChild(document.createElement('div')).id = 'calendar';
-createCalendar('calendar', 2012, 9);
+createCalendar('calendar', 2017, 6);
 
 function createCalendar(containerId, year, month) {
     const parent = document.getElementById(containerId);
@@ -109,25 +109,35 @@ function createCalendar(containerId, year, month) {
         year: 'numeric',
         month: 'long',
     };
-
+    const firstWeekDay = new Date(year, month - 1, 1).getDay() || 7;
     const title = parent.appendChild(document.createElement('h2'));
     title.innerHTML = new Date(year, month - 1).toLocaleString('ru', options);
 
     let table = parent.appendChild(document.createElement('table'));
+    let tr = newTr();
 
-    const tr = newTr();
     for (let i = 0; i < days.length; i++) {
         tr.appendChild(document.createElement('th')).innerHTML = days[i];
     }
-    for (let i = 1; i <= daysInMonth; i++) {
-        console.log(new Date(year, month - 1, i).getDay());
+
+    tr = newTr();
+
+    for (let i = 1; i < firstWeekDay; i++) {
+        newTd(tr);
     }
 
+    for (let i = 1, j = firstWeekDay-1; i < firstWeekDay - 1 + daysInMonth; i++, j++) {
+        if (j === 7) {
+            j = 0;
+            tr = newTr();
+        }
+        let td = newTd(tr);
+        if (i <= daysInMonth) td.innerHTML = i;
+    }
 
     function newTr() {
         return table.appendChild(document.createElement('tr'));
     }
-
     function newTd(trNode) {
         return trNode.appendChild(document.createElement('td'));
     }
