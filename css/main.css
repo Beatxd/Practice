@@ -2,6 +2,9 @@
   margin: 0;
   padding: 0;
 }
+.hide{
+  visibility: hidden;
+}
 
 p {
   margin: 50px;
@@ -51,4 +54,17 @@ li {
 }
 #calendar th:nth-child(6),#calendar th:nth-child(7){
   background-color: #262;
+}
+
+.sweetMenu{
+  cursor: pointer;
+  font-weight: bold;
+  margin: 5px;
+}
+.sweetMenu li{
+  font-weight: 300;
+  cursor: default;
+  list-style-type: none;
+  margin-left: 0;
+
 }
