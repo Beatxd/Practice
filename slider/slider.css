@@ -1,0 +1,20 @@
+.hidden{
+  display: none;
+}
+#container{
+  border: 1px solid black;
+}
+#slider-wrapper{
+  display: table-cell;
+  vertical-align: middle;
+  padding: 5px;
+}
+#slider-wrapper div{
+  display: inline-block;
+}
+#slider-wrapper img{
+  width: 50px;
+  height: 50px;
+}
+.slider-inner-img{
+}
