@@ -48,7 +48,6 @@ function Slider(parentNode, folderUrl, imgCount, imgSize, imgInRow) {
         }
     }
 
-
     parentNode.appendChild(wrapper);
 }
 
