@@ -83,8 +83,8 @@ function Checkers(placeId, id = 'id' + Math.floor(Math.random() * 1000000)) {
     boardClick(id);
     trashClick(tempInnerHTML);
 
-    const blackFigure = '<img src="img\\black.png" class="checkersImg">';
-    const whiteFigure = '<img src="img\\white.png" class="checkersImg">';
+    const blackFigure = '<img src="img\\black.png" class="checkersImg blackFigure">';
+    const whiteFigure = '<img src="img\\white.png" class="checkersImg whiteFigure">';
     this.startGame = (startLines = 3) => {
         const cellsNum = this.columns * this.lines;
         for (let i = 1; i < startLines * this.columns; i++) {
@@ -168,6 +168,7 @@ function Checkers(placeId, id = 'id' + Math.floor(Math.random() * 1000000)) {
 
             while (target !== this) {
                 if (target.tagName === 'DIV') {
+                    console.log(isWhite(target));
                     highlight(target);
                     figureMove(target);
                     return;
@@ -210,6 +211,11 @@ function Checkers(placeId, id = 'id' + Math.floor(Math.random() * 1000000)) {
         }
 
     };
+
+    function isWhite(node) {
+        if(!node.lastElementChild) return -1;
+        return node.lastElementChild.classList.contains('whiteFigure');
+    }
 
     function figureMove(cell) {
         if (cell.classList.contains('whiteCell')) return;
