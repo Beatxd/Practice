@@ -101,9 +101,9 @@ function Checkers(placeId, id = 'id' + Math.floor(Math.random() * 1000000)) {
     let selectedCell;
     let pathFinder = (cell, offHighlight) => {
         if (offHighlight){
-            let highlightCells = document.getElementById(id).querySelectorAll('.highlightAvailible');
+            let highlightCells = document.getElementById(id).querySelectorAll('.highlightAvailable');
             highlightCells.forEach((cell) => {
-                cell.classList.remove('highlightAvailible');
+                cell.classList.remove('highlightAvailable');
             });
             return;
         }
@@ -115,11 +115,17 @@ function Checkers(placeId, id = 'id' + Math.floor(Math.random() * 1000000)) {
         let rightUp = finder('right', 'up');
         let leftDown = finder('left', 'down');
         let rightDown = finder('right', 'down');
-        if(leftUp) highlightPath(leftUp);
-        if(rightUp) highlightPath(rightUp);
-        if(leftDown) highlightPath(leftDown);
-        if(rightDown) highlightPath(rightDown);
-
+        //highlight available
+        if(isWhite(cell)){
+            if(leftUp) highlightPath(leftUp);
+            if(rightUp) highlightPath(rightUp);
+        }
+        console.log(isWhite(cell));
+        if(!isWhite(cell)){
+            console.log('black');
+            if(leftDown) highlightPath(leftDown);
+            if(rightDown) highlightPath(rightDown);
+        }
         function finder(horizChange, vertChange) {
             let result = '';
             if (horizChange === 'left') {
@@ -155,7 +161,7 @@ function Checkers(placeId, id = 'id' + Math.floor(Math.random() * 1000000)) {
 
         function highlightPath(node){
             if (node.firstChild) return;
-            node.classList.add('highlightAvailible');
+            node.classList.add('highlightAvailable');
         }
 
 
@@ -223,9 +229,10 @@ function Checkers(placeId, id = 'id' + Math.floor(Math.random() * 1000000)) {
             if (tempInnerHTML !== '') return;
             tempInnerHTML = cell.innerHTML;
             logger(cell.id);
-            cell.innerHTML = '';
             pathFinder(cell);
+            cell.innerHTML = '';
         } else {
+            if(!cell.classList.contains('highlightAvailable')) return;
             cell.innerHTML = tempInnerHTML;
             logger(false, cell.id);
             tempInnerHTML = '';
@@ -244,9 +251,12 @@ function Checkers(placeId, id = 'id' + Math.floor(Math.random() * 1000000)) {
     function trashClick() {
         let trash = document.querySelector('.boardTrash');
         trash.onclick = function () {
+            selectedCell.classList.remove('highlight');
             if (tempInnerHTML !== '') {
                 trash.innerHTML += tempInnerHTML;
                 tempInnerHTML = '';
+                pathFinder(null, true);
+
             }
         }
     }
