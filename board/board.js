@@ -229,6 +229,8 @@ function Checkers(placeId, id = 'id' + Math.floor(Math.random() * 1000000)) {
         if (cell.classList.contains('whiteCell')) return;
         if (cell.innerHTML !== '') {
             if (tempInnerHTML !== '') return;
+            if (!isTurnAvailable(cell)) return;
+            console.log(isTurnAvailable(cell));
             tempInnerHTML = cell.innerHTML;
             logger(cell.id);
             pathFinder(cell);
@@ -259,6 +261,10 @@ function Checkers(placeId, id = 'id' + Math.floor(Math.random() * 1000000)) {
             node.classList.remove('blackTurn');
             node.classList.add('whiteTurn');
         }
+    }
+
+    function isTurnAvailable(node){
+        return isWhite(node) === currentTurn.classList.contains('whiteTurn');
     }
 
     function highlight(node) {
