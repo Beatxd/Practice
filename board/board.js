@@ -120,9 +120,7 @@ function Checkers(placeId, id = 'id' + Math.floor(Math.random() * 1000000)) {
             if(leftUp) highlightPath(leftUp);
             if(rightUp) highlightPath(rightUp);
         }
-        console.log(isWhite(cell));
         if(!isWhite(cell)){
-            console.log('black');
             if(leftDown) highlightPath(leftDown);
             if(rightDown) highlightPath(rightDown);
         }
@@ -174,7 +172,6 @@ function Checkers(placeId, id = 'id' + Math.floor(Math.random() * 1000000)) {
 
             while (target !== this) {
                 if (target.tagName === 'DIV') {
-                    console.log(isWhite(target));
                     highlight(target);
                     figureMove(target);
                     return;
@@ -185,7 +182,7 @@ function Checkers(placeId, id = 'id' + Math.floor(Math.random() * 1000000)) {
         };
     }
 
-    let tempLoggerCell;
+    let tempLoggerCell; //used in figureMove
     let tempLoggerTurn;
     let tempLoggerLi;
     let logCount = 1;
@@ -232,7 +229,12 @@ function Checkers(placeId, id = 'id' + Math.floor(Math.random() * 1000000)) {
             pathFinder(cell);
             cell.innerHTML = '';
         } else {
-            if(!cell.classList.contains('highlightAvailable')) return;
+            if(!cell.classList.contains('highlightAvailable')) {
+                document.getElementById(tempLoggerCell).innerHTML = tempInnerHTML;
+                tempInnerHTML = '';
+                tempLoggerCell = null;
+                return;
+            }
             cell.innerHTML = tempInnerHTML;
             logger(false, cell.id);
             tempInnerHTML = '';
