@@ -67,9 +67,9 @@ h2{
     margin-left: 10px;
     list-style: none;
 }
-.boardLog ul li b{
+.boardLog ul li b, .whiteTurn{
     color: #fff;
 }
-.boardLog ul li b:nth-child(2){
+.boardLog ul li b:nth-child(2), .blackTurn{
     color: #000;
 }

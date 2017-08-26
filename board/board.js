@@ -58,6 +58,8 @@ function Log(placeId, boardId) {
 
     let mainLog = placeId.appendChild(document.createElement('div'));
     mainLog.className = 'boardLog';
+    let currentTurn = mainLog.appendChild(document.createElement('h2'));
+    currentTurn.innerHTML = "Ход <b id='currentTurn'></b>";
     let title = mainLog.appendChild(document.createElement('h2'));
     title.innerHTML = 'log:';
     this.logList = mainLog.appendChild(document.createElement('ul'));
@@ -220,6 +222,9 @@ function Checkers(placeId, id = 'id' + Math.floor(Math.random() * 1000000)) {
         return node.lastElementChild.classList.contains('whiteFigure');
     }
 
+    let currentTurn = document.getElementById('currentTurn');
+    currentTurn.classList.add('whiteTurn');
+    currentTurn.innerHTML = 'белых';
     function figureMove(cell) {
         if (cell.classList.contains('whiteCell')) return;
         if (cell.innerHTML !== '') {
@@ -233,12 +238,26 @@ function Checkers(placeId, id = 'id' + Math.floor(Math.random() * 1000000)) {
                 document.getElementById(tempLoggerCell).innerHTML = tempInnerHTML;
                 tempInnerHTML = '';
                 tempLoggerCell = null;
+                pathFinder(null, true);
                 return;
             }
             cell.innerHTML = tempInnerHTML;
             logger(false, cell.id);
             tempInnerHTML = '';
-            pathFinder(null, true)
+            pathFinder(null, true);
+            currentTurnToggle(currentTurn);
+        }
+    }
+
+    function currentTurnToggle(node){
+        if(node.classList.contains('whiteTurn')){
+            node.innerHTML = 'черных';
+            node.classList.remove('whiteTurn');
+            node.classList.add('blackTurn');
+        }else{
+            node.innerHTML = 'белых';
+            node.classList.remove('blackTurn');
+            node.classList.add('whiteTurn');
         }
     }
 
