@@ -205,3 +205,4 @@ function finishGame() {
     clearInterval(snake_timer);
     alert('Вы проиграли!\nВаш результат: '+score.toString());
 }
+

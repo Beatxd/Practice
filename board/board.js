@@ -178,15 +178,6 @@ function Checkers(placeId, id = 'id' + Math.floor(Math.random() * 1000000)) {
 
     };
 
-    function isWhite(node) {
-        if (!node.lastElementChild) return -1;
-        return node.lastElementChild.classList.contains('whiteFigure');
-    }
-
-    function isEmpty(node) {
-        return !node.lastElementChild
-    }
-
     let currentTurn = document.getElementById('currentTurn');
     currentTurn.classList.add('whiteTurn');
     currentTurn.innerHTML = 'белых';
@@ -253,8 +244,7 @@ function Checkers(placeId, id = 'id' + Math.floor(Math.random() * 1000000)) {
             }
         }
         return document.getElementById(result);
-    }
-
+    };
     function currentTurnToggle(node) {
         if (node.classList.contains('whiteTurn')) {
             node.innerHTML = 'черных';
@@ -267,26 +257,36 @@ function Checkers(placeId, id = 'id' + Math.floor(Math.random() * 1000000)) {
         }
     }
 
+    function isWhite(node) {
+        if (!node.lastElementChild) return -1;
+        return node.lastElementChild.classList.contains('whiteFigure');
+    }
+
+    function isEmpty(node) {
+        return !node.lastElementChild
+    }
     function isBeatAvailable(node) {
         if (!isEmpty(nearCellFinder(node, 'left', 'up'))) {
-            nearCellFinder(nearCellFinder(node, 'left', 'up'), 'left', true);
+            const leftUp = nearCellFinder(nearCellFinder(node, 'left', 'up'), 'left', 'up');
+            if (leftUp) highlightPath(leftUp);
         }
         if (!isEmpty(nearCellFinder(node, 'right', 'up'))) {
-            allNearCellsFinder(nearCellFinder(node, 'right', 'up'), false, true);
+            const rightUp = nearCellFinder(nearCellFinder(node, 'right', 'up'), 'right', 'up');
+            if (rightUp) highlightPath(rightUp);
         }
         if (!isEmpty(nearCellFinder(node, 'left', 'down'))) {
-            allNearCellsFinder(nearCellFinder(node, 'left', 'down'), false, true);
+            const leftDown = nearCellFinder(nearCellFinder(node, 'left', 'down'), 'left', 'down');
+            if (leftDown) highlightPath(leftDown);
         }
         if (!isEmpty(nearCellFinder(node, 'right', 'down'))) {
-            allNearCellsFinder(nearCellFinder(node, 'right', 'down'), false, true);
+            const rightDown = nearCellFinder(nearCellFinder(node, 'right', 'down'), 'right', 'down')
+            if (rightDown) highlightPath(rightDown);
         }
 
     }
-
     function isTurnAvailable(node) {
         return isWhite(node) === currentTurn.classList.contains('whiteTurn');
     }
-
     function highlight(node) {
         if (selectedCell) {
             selectedCell.classList.remove('highlight');
@@ -294,12 +294,10 @@ function Checkers(placeId, id = 'id' + Math.floor(Math.random() * 1000000)) {
         selectedCell = node;
         selectedCell.classList.add('highlight');
     }
-
     function highlightPath(node) {
-        if (node.firstChild) return;
+        if (node.lastElementChild) return;
         node.classList.add('highlightAvailable');
     }
-
     function trashClick() {
         let trash = document.querySelector('.boardTrash');
         trash.onclick = function () {
