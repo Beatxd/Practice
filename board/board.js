@@ -101,67 +101,28 @@ function Checkers(placeId, id = 'id' + Math.floor(Math.random() * 1000000)) {
     this.startGame();
 
     let selectedCell;
-    let pathFinder = (cell, offHighlight) => {
-        if (offHighlight){
+    let allNearCellsFinder = (cell, offHighlight) => {
+        if (offHighlight) {
             let highlightCells = document.getElementById(id).querySelectorAll('.highlightAvailable');
             highlightCells.forEach((cell) => {
                 cell.classList.remove('highlightAvailable');
             });
             return;
         }
-        const current = cell.id.split('');
-        const letters = this.letters;
-        let letterIndex = letters.indexOf(current[0]);
 
-        let leftUp = finder('left', 'up');
-        let rightUp = finder('right', 'up');
-        let leftDown = finder('left', 'down');
-        let rightDown = finder('right', 'down');
+        let leftUp = nearCellFinder(cell, 'left', 'up');
+        let rightUp = nearCellFinder(cell, 'right', 'up');
+        let leftDown = nearCellFinder(cell, 'left', 'down');
+        let rightDown = nearCellFinder(cell, 'right', 'down');
         //highlight available
-        if(isWhite(cell)){
-            if(leftUp) highlightPath(leftUp);
-            if(rightUp) highlightPath(rightUp);
-        }
-        if(!isWhite(cell)){
-            if(leftDown) highlightPath(leftDown);
-            if(rightDown) highlightPath(rightDown);
-        }
-        function finder(horizChange, vertChange) {
-            let result = '';
-            if (horizChange === 'left') {
-                if (letterIndex > 0) {
-                    result = letters[letterIndex - 1];
-                }else{
-                    return null;
-                }
-            }
-            if (horizChange === 'right') {
-                if (letterIndex < letters.length - 1) {
-                    result = letters[letterIndex + 1];
-                }else{
-                    return null;
-                }
-            }
-            if (vertChange === 'up') {
-                if (current[1] > 1) {
-                    result += current[1] - 1;
-                }else{
-                    return null;
-                }
-            }
-            if (vertChange === 'down') {
-                if (current[1] < 8) {
-                    result += +current[1] + 1;
-                }else{
-                    return null;
-                }
-            }
-            return document.getElementById(result);
-        }
 
-        function highlightPath(node){
-            if (node.firstChild) return;
-            node.classList.add('highlightAvailable');
+        if (isWhite(cell)) {
+            if (leftUp) highlightPath(leftUp);
+            if (rightUp) highlightPath(rightUp);
+        }
+        if (!isWhite(cell)) {
+            if (leftDown) highlightPath(leftDown);
+            if (rightDown) highlightPath(rightDown);
         }
 
 
@@ -218,8 +179,12 @@ function Checkers(placeId, id = 'id' + Math.floor(Math.random() * 1000000)) {
     };
 
     function isWhite(node) {
-        if(!node.lastElementChild) return -1;
+        if (!node.lastElementChild) return -1;
         return node.lastElementChild.classList.contains('whiteFigure');
+    }
+
+    function isEmpty(node) {
+        return !node.lastElementChild
     }
 
     let currentTurn = document.getElementById('currentTurn');
@@ -232,39 +197,93 @@ function Checkers(placeId, id = 'id' + Math.floor(Math.random() * 1000000)) {
             if (!isTurnAvailable(cell)) return;
             tempInnerHTML = cell.innerHTML;
             logger(cell.id);
-            pathFinder(cell);
+            allNearCellsFinder(cell);
+            isBeatAvailable(cell);
             cell.innerHTML = '';
         } else {
-            if(!cell.classList.contains('highlightAvailable')) {
-                if(tempLoggerCell){
+            if (!cell.classList.contains('highlightAvailable')) {
+                if (tempLoggerCell) {
                     document.getElementById(tempLoggerCell).innerHTML = tempInnerHTML;
                 }
                 tempInnerHTML = '';
                 tempLoggerCell = null;
-                pathFinder(null, true);
+                allNearCellsFinder(null, true);
                 return;
             }
             cell.innerHTML = tempInnerHTML;
             logger(false, cell.id);
             tempInnerHTML = '';
-            pathFinder(null, true);
+            allNearCellsFinder(null, true);
             currentTurnToggle(currentTurn);
         }
     }
 
-    function currentTurnToggle(node){
-        if(node.classList.contains('whiteTurn')){
+    const nearCellFinder = (cell, horizChange, vertChange) => {
+        const current = cell.id.split('');
+        const letters = this.letters;
+        let letterIndex = letters.indexOf(current[0]);
+        let result = '';
+
+        if (horizChange === 'left') {
+            if (letterIndex > 0) {
+                result = letters[letterIndex - 1];
+            } else {
+                return null;
+            }
+        }
+        if (horizChange === 'right') {
+            if (letterIndex < letters.length - 1) {
+                result = letters[letterIndex + 1];
+            } else {
+                return null;
+            }
+        }
+        if (vertChange === 'up') {
+            if (current[1] > 1) {
+                result += current[1] - 1;
+            } else {
+                return null;
+            }
+        }
+        if (vertChange === 'down') {
+            if (current[1] < 8) {
+                result += +current[1] + 1;
+            } else {
+                return null;
+            }
+        }
+        return document.getElementById(result);
+    }
+
+    function currentTurnToggle(node) {
+        if (node.classList.contains('whiteTurn')) {
             node.innerHTML = 'черных';
             node.classList.remove('whiteTurn');
             node.classList.add('blackTurn');
-        }else{
+        } else {
             node.innerHTML = 'белых';
             node.classList.remove('blackTurn');
             node.classList.add('whiteTurn');
         }
     }
 
-    function isTurnAvailable(node){
+    function isBeatAvailable(node) {
+        if (!isEmpty(nearCellFinder(node, 'left', 'up'))) {
+            nearCellFinder(nearCellFinder(node, 'left', 'up'), 'left', true);
+        }
+        if (!isEmpty(nearCellFinder(node, 'right', 'up'))) {
+            allNearCellsFinder(nearCellFinder(node, 'right', 'up'), false, true);
+        }
+        if (!isEmpty(nearCellFinder(node, 'left', 'down'))) {
+            allNearCellsFinder(nearCellFinder(node, 'left', 'down'), false, true);
+        }
+        if (!isEmpty(nearCellFinder(node, 'right', 'down'))) {
+            allNearCellsFinder(nearCellFinder(node, 'right', 'down'), false, true);
+        }
+
+    }
+
+    function isTurnAvailable(node) {
         return isWhite(node) === currentTurn.classList.contains('whiteTurn');
     }
 
@@ -276,6 +295,11 @@ function Checkers(placeId, id = 'id' + Math.floor(Math.random() * 1000000)) {
         selectedCell.classList.add('highlight');
     }
 
+    function highlightPath(node) {
+        if (node.firstChild) return;
+        node.classList.add('highlightAvailable');
+    }
+
     function trashClick() {
         let trash = document.querySelector('.boardTrash');
         trash.onclick = function () {
@@ -283,7 +307,7 @@ function Checkers(placeId, id = 'id' + Math.floor(Math.random() * 1000000)) {
             if (tempInnerHTML !== '') {
                 trash.innerHTML += tempInnerHTML;
                 tempInnerHTML = '';
-                pathFinder(null, true);
+                allNearCellsFinder(null, true);
 
             }
         }
