@@ -219,28 +219,28 @@ function Checkers(placeId, id = 'id' + Math.floor(Math.random() * 1000000)) {
             if (letterIndex > 0) {
                 result = letters[letterIndex - 1];
             } else {
-                return null;
+                return cell;
             }
         }
         if (horizChange === 'right') {
             if (letterIndex < letters.length - 1) {
                 result = letters[letterIndex + 1];
             } else {
-                return null;
+                return cell;
             }
         }
         if (vertChange === 'up') {
             if (current[1] > 1) {
                 result += current[1] - 1;
             } else {
-                return null;
+                return cell;
             }
         }
         if (vertChange === 'down') {
             if (current[1] < 8) {
                 result += +current[1] + 1;
             } else {
-                return null;
+                return cell;
             }
         }
         return document.getElementById(result);
@@ -266,21 +266,17 @@ function Checkers(placeId, id = 'id' + Math.floor(Math.random() * 1000000)) {
         return !node.lastElementChild
     }
     function isBeatAvailable(node) {
-        if (!isEmpty(nearCellFinder(node, 'left', 'up'))) {
-            const leftUp = nearCellFinder(nearCellFinder(node, 'left', 'up'), 'left', 'up');
-            if (leftUp) highlightPath(leftUp);
+        if (!isEmpty(nearCellFinder(node, 'left', 'up')) && isWhite(node) !== isWhite(nearCellFinder(node, 'left', 'up'))) {
+            highlightPath(nearCellFinder(nearCellFinder(node, 'left', 'up'), 'left', 'up'));
         }
-        if (!isEmpty(nearCellFinder(node, 'right', 'up'))) {
-            const rightUp = nearCellFinder(nearCellFinder(node, 'right', 'up'), 'right', 'up');
-            if (rightUp) highlightPath(rightUp);
+        if (!isEmpty(nearCellFinder(node, 'right', 'up')) && isWhite(node) !== isWhite(nearCellFinder(node, 'right', 'up'))) {
+            highlightPath(nearCellFinder(nearCellFinder(node, 'right', 'up'), 'right', 'up'));
         }
-        if (!isEmpty(nearCellFinder(node, 'left', 'down'))) {
-            const leftDown = nearCellFinder(nearCellFinder(node, 'left', 'down'), 'left', 'down');
-            if (leftDown) highlightPath(leftDown);
+        if (!isEmpty(nearCellFinder(node, 'left', 'down')) && isWhite(node) !== isWhite(nearCellFinder(node, 'left', 'down'))) {
+            highlightPath(nearCellFinder(nearCellFinder(node, 'left', 'down'), 'left', 'down'));
         }
-        if (!isEmpty(nearCellFinder(node, 'right', 'down'))) {
-            const rightDown = nearCellFinder(nearCellFinder(node, 'right', 'down'), 'right', 'down')
-            if (rightDown) highlightPath(rightDown);
+        if (!isEmpty(nearCellFinder(node, 'right', 'down')) && isWhite(node) !== isWhite(nearCellFinder(node, 'right', 'down'))) {
+            highlightPath(nearCellFinder(nearCellFinder(node, 'right', 'down'), 'right', 'down'));
         }
 
     }
