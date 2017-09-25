@@ -164,10 +164,12 @@ function Checkers(placeId, id = 'id' + Math.floor(Math.random() * 1000000)) {
                 tempLoggerLi.remove();
                 this.logWriteTurn(`${logCount}.) <b>${tempLoggerTurn}</b> :^: <b>${tempLoggerCell
                     .toUpperCase()} - ${secondCell.toUpperCase()}</b>`);
+                autoRemoveFigure(tempLoggerCell, secondCell);
                 tempLoggerTurn = null;
                 logCount++;
             } else {
                 tempLoggerTurn = `${tempLoggerCell.toUpperCase()} - ${secondCell.toUpperCase()}`;
+                autoRemoveFigure(tempLoggerCell, secondCell);
                 tempLoggerLi = this.logWriteTurn(`${logCount}.) <b>${tempLoggerTurn}</b>`);
             }
             tempLoggerCell = null;
@@ -175,7 +177,6 @@ function Checkers(placeId, id = 'id' + Math.floor(Math.random() * 1000000)) {
                 this.logList.children[this.logList.children.length - 21].setAttribute('hidden', 'true')
             }
         }
-
     };
 
     let currentTurn = document.getElementById('currentTurn');
@@ -262,6 +263,13 @@ function Checkers(placeId, id = 'id' + Math.floor(Math.random() * 1000000)) {
         return node.lastElementChild.classList.contains('whiteFigure');
     }
 
+    function autoRemoveFigure(cellOne, cellTwo){
+        let result = cellOne[1] - cellTwo[1];
+        if (result < 0) result = -result;
+        if(result > 1){
+            console.log('hello')
+        }
+    }
     function isEmpty(node) {
         return !node.lastElementChild
     }
