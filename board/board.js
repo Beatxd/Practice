@@ -49,7 +49,6 @@ function Trash(placeId) {
     div.className = 'boardTrash';
     let title = div.appendChild(document.createElement('h2'));
     title.innerHTML = 'Отбой:';
-
 }
 
 function Log(placeId, boardId) {
@@ -83,7 +82,7 @@ function Checkers(placeId, id = 'id' + Math.floor(Math.random() * 1000000)) {
     Log.apply(this, [placeId, id]);
     let tempInnerHTML = '';
     boardClick(id);
-    trashClick(tempInnerHTML);
+    moveToTrash(tempInnerHTML);
 
     const blackFigure = '<img src="img\\black.png" class="checkersImg blackFigure">';
     const whiteFigure = '<img src="img\\white.png" class="checkersImg whiteFigure">';
@@ -153,25 +152,28 @@ function Checkers(placeId, id = 'id' + Math.floor(Math.random() * 1000000)) {
     const autoRemoveFigure = (cellOne, cellTwo) => {
         const letters = this.letters;
         const result2 = cellOne[1] - cellTwo[1];
-
         const letterIndexOne = letters.indexOf(cellOne[0]);
         const letterIndexTwo = letters.indexOf(cellTwo[0]);
         const result1 = letterIndexOne - letterIndexTwo;
-
+        let id = undefined;
         if (result2 > 1){
-            let id = 1;
+            id = cellOne[1] - 1;
+        } else if (result2 < -1) {
+            id = +cellOne[1] + 1;
+        }
+        if (!id) {
+            return;
         }
         if(result2 > 1 || result2 < -1){
             if (result1 > 0){
-                console.log(letters[letterIndexOne - 1]);
                 id = letters[letterIndexOne - 1] + id;
             }else{
-                console.log(letters[letterIndexOne + 1]);
+                id = letters[letterIndexOne + 1] + id;
             }
-
         }
-
-    }
+        const elem = document.getElementById(id);
+        moveToTrash(elem);
+    };
     let logger = (firstCell, secondCell) => {
         if (!tempInnerHTML) {
             tempLoggerCell = null;
@@ -318,7 +320,8 @@ function Checkers(placeId, id = 'id' + Math.floor(Math.random() * 1000000)) {
         if (node.lastElementChild) return;
         node.classList.add('highlightAvailable');
     }
-    function trashClick() {
+
+    function moveToTrash(cell) {
         let trash = document.querySelector('.boardTrash');
         trash.onclick = function () {
             selectedCell.classList.remove('highlight');
@@ -326,8 +329,10 @@ function Checkers(placeId, id = 'id' + Math.floor(Math.random() * 1000000)) {
                 trash.innerHTML += tempInnerHTML;
                 tempInnerHTML = '';
                 allNearCellsFinder(null, true);
-
             }
+        };
+        if (cell) {
+            trash.appendChild(cell.lastElementChild);
         }
     }
 }
