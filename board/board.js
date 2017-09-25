@@ -4,7 +4,7 @@ function Board(placeId, newBoardId, columns = 8, lines = 8) {
 
     this.lines = lines;
     this.columns = columns;
-    this.letters = 'abcdifghigklmnopqrstuvwxyz'.split('', columns);
+    this.letters = 'abcdefghigklmnopqrstuvwxyz'.split('', columns);
     this.cellsIdArr = [];
 
     const place = document.getElementById(placeId);
@@ -20,7 +20,7 @@ function Board(placeId, newBoardId, columns = 8, lines = 8) {
 
         for (let i = 0, j = 0; i < numCells; i++) {
             let newDiv = document.createElement('div');
-            newDiv.id = this.letters[j] + lineNum;
+            newDiv.id = this.letters[j] + (lines + 1 - lineNum);
             this.cellsIdArr.push(this.letters[j] + lineNum);
             colorSetter(j, lineNum, newDiv);
             boardWrapper.appendChild(newDiv);
@@ -89,12 +89,12 @@ function Checkers(placeId, id = 'id' + Math.floor(Math.random() * 1000000)) {
     const whiteFigure = '<img src="img\\white.png" class="checkersImg whiteFigure">';
     this.startGame = (startLines = 3) => {
         const cellsNum = this.columns * this.lines;
-        for (let i = 1; i < startLines * this.columns; i++) {
+        for (let i = 0; i < startLines * this.columns; i++) {
             let cell = document.getElementById(this.cellsIdArr[i]);
             if (cell.classList.contains('blackCell')) {
-                cell.innerHTML = blackFigure;
-                cell = document.getElementById(this.cellsIdArr[cellsNum - i - 1]);
                 cell.innerHTML = whiteFigure;
+                cell = document.getElementById(this.cellsIdArr[cellsNum - i - 1]);
+                cell.innerHTML = blackFigure;
             }
         }
     };
@@ -116,11 +116,11 @@ function Checkers(placeId, id = 'id' + Math.floor(Math.random() * 1000000)) {
         let rightDown = nearCellFinder(cell, 'right', 'down');
         //highlight available
 
-        if (isWhite(cell)) {
+        if (!isWhite(cell)) {
             if (leftUp) highlightPath(leftUp);
             if (rightUp) highlightPath(rightUp);
         }
-        if (!isWhite(cell)) {
+        if (isWhite(cell)) {
             if (leftDown) highlightPath(leftDown);
             if (rightDown) highlightPath(rightDown);
         }
@@ -149,6 +149,29 @@ function Checkers(placeId, id = 'id' + Math.floor(Math.random() * 1000000)) {
     let tempLoggerTurn;
     let tempLoggerLi;
     let logCount = 1;
+
+    const autoRemoveFigure = (cellOne, cellTwo) => {
+        const letters = this.letters;
+        const result2 = cellOne[1] - cellTwo[1];
+
+        const letterIndexOne = letters.indexOf(cellOne[0]);
+        const letterIndexTwo = letters.indexOf(cellTwo[0]);
+        const result1 = letterIndexOne - letterIndexTwo;
+
+        if (result2 > 1){
+            let id = 1;
+        }
+        if(result2 > 1 || result2 < -1){
+            if (result1 > 0){
+                console.log(letters[letterIndexOne - 1]);
+                id = letters[letterIndexOne - 1] + id;
+            }else{
+                console.log(letters[letterIndexOne + 1]);
+            }
+
+        }
+
+    }
     let logger = (firstCell, secondCell) => {
         if (!tempInnerHTML) {
             tempLoggerCell = null;
@@ -263,13 +286,6 @@ function Checkers(placeId, id = 'id' + Math.floor(Math.random() * 1000000)) {
         return node.lastElementChild.classList.contains('whiteFigure');
     }
 
-    function autoRemoveFigure(cellOne, cellTwo){
-        let result = cellOne[1] - cellTwo[1];
-        if (result < 0) result = -result;
-        if(result > 1){
-            console.log('hello')
-        }
-    }
     function isEmpty(node) {
         return !node.lastElementChild
     }
