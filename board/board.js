@@ -173,6 +173,9 @@ function Checkers(placeId, id = 'id' + Math.floor(Math.random() * 1000000)) {
         }
         const elem = document.getElementById(id);
         moveToTrash(elem);
+        // if can beat again: change turn + find path
+        isBeatAvailable(cellTwo);
+
     };
     let logger = (firstCell, secondCell) => {
         if (!tempInnerHTML) {
